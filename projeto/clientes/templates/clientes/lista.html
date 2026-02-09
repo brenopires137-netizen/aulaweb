@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Clientes</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        h1 {
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+        tr:hover {
+            background-color: #f9f9f9;
+        }
+        a {
+            padding: 5px 10px;
+            margin-right: 5px;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .editar {
+            background-color: #2196F3;
+            color: white;
+        }
+        .excluir {
+            background-color: #f44336;
+            color: white;
+        }
+        .novo {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            margin-bottom: 20px;
+            display: inline-block;
+        }
+        .vazio {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+        }
+        .voltar {
+            background-color: #6c757d;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <h1>Lista de Clientes</h1>
+    
+    <a href="{% url 'criar' %}" class="novo">+ Novo Cliente</a>
+    <a href="{% url 'home' %}" class="voltar">← Voltar</a>
+    
+    {% if clientes %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>Email</th>
+                    <th>Telefone</th>
+                    <th>Data de Criação</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for c in clientes %}
+                    <tr>
+                        <td>{{ c.nome }}</td>
+                        <td>{{ c.email }}</td>
+                        <td>{{ c.telefone }}</td>
+                        <td>{{ c.criado_em|date:"d/m/Y H:i" }}</td>
+                        <td>
+                            <a href="{% url 'editar' c.pk %}" class="editar">Editar</a>
+                            <a href="{% url 'excluir' c.pk %}" class="excluir">Excluir</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <div class="vazio">
+            <p>Nenhum cliente cadastrado. <a href="{% url 'criar' %}">Criar um novo cliente</a></p>
+        </div>
+    {% endif %}
+</body>
+</html>

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Produtos</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #007bff;
+            color: white;
+        }
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        a {
+            margin-right: 10px;
+            padding: 5px 10px;
+            text-decoration: none;
+            border-radius: 3px;
+        }
+        .btn-novo {
+            background-color: #28a745;
+            color: white;
+            margin-bottom: 20px;
+        }
+        .btn-editar {
+            background-color: #ffc107;
+            color: black;
+        }
+        .btn-excluir {
+            background-color: #dc3545;
+            color: white;
+        }
+        .btn-voltar {
+            background-color: #6c757d;
+            color: white;
+        }
+        .btn-novo:hover, .btn-editar:hover, .btn-excluir:hover, .btn-voltar:hover {
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+    <h1>Produtos</h1>
+    <a href="{% url 'produtos_criar' %}" class="btn-novo">+ Novo Produto</a>
+    <a href="{% url 'home' %}" class="btn-voltar">← Voltar</a>
+    
+    {% if produtos %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>Preço</th>
+                    <th>Quantidade</th>
+                    <th>Data de Validade</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for produto in produtos %}
+                    <tr>
+                        <td>{{ produto.nome }}</td>
+                        <td>R$ {{ produto.preco }}</td>
+                        <td>{{ produto.quantidade }}</td>
+                        <td>{{ produto.data_validade|date:"d/m/Y" }}</td>
+                        <td>
+                            <a href="{% url 'produtos_editar' produto.pk %}" class="btn-editar">Editar</a>
+                            <a href="{% url 'produtos_excluir' produto.pk %}" class="btn-excluir">Excluir</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>Nenhum produto cadastrado.</p>
+    {% endif %}
+</body>
+</html>
