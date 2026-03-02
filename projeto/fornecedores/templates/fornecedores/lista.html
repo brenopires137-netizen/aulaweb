@@ -1,0 +1,115 @@
+﻿<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Fornecedores</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        h1 {
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+            vertical-align: top;
+        }
+        th {
+            background-color: #0d6efd;
+            color: white;
+        }
+        tr:hover {
+            background-color: #f9f9f9;
+        }
+        a {
+            padding: 5px 10px;
+            margin-right: 5px;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .editar {
+            background-color: #ffc107;
+            color: #222;
+        }
+        .excluir {
+            background-color: #dc3545;
+            color: white;
+        }
+        .novo {
+            background-color: #198754;
+            color: white;
+            padding: 10px 20px;
+            margin-bottom: 20px;
+            display: inline-block;
+        }
+        .voltar {
+            background-color: #6c757d;
+            color: white;
+            padding: 10px 20px;
+        }
+        .vazio {
+            text-align: center;
+            padding: 30px;
+            color: #666;
+            background-color: white;
+            border-radius: 6px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Lista de Fornecedores</h1>
+
+    <a href="{% url 'fornecedores_criar' %}" class="novo">+ Novo Fornecedor</a>
+    <a href="{% url 'home' %}" class="voltar">Voltar</a>
+
+    {% if fornecedores %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Nome Fantasia</th>
+                    <th>CNPJ</th>
+                    <th>Tipo</th>
+                    <th>Categoria(s)</th>
+                    <th>O que fornece</th>
+                    <th>Prazo/Condição</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for fornecedor in fornecedores %}
+                    <tr>
+                        <td>{{ fornecedor.nome_fantasia }}</td>
+                        <td>{{ fornecedor.cnpj }}</td>
+                        <td>{{ fornecedor.get_tipo_fornecimento_display }}</td>
+                        <td>{{ fornecedor.categorias_fornecidas|default:'-' }}</td>
+                        <td>{{ fornecedor.itens_fornecidos|default:'-' }}</td>
+                        <td>
+                            Prazo: {{ fornecedor.prazo_entrega_dias|default:'-' }} dias<br>
+                            Pagamento: {{ fornecedor.condicao_pagamento|default:'-' }}
+                        </td>
+                        <td>
+                            <a href="{% url 'fornecedores_editar' fornecedor.pk %}" class="editar">Editar</a>
+                            <a href="{% url 'fornecedores_excluir' fornecedor.pk %}" class="excluir">Excluir</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <div class="vazio">
+            Nenhum fornecedor cadastrado.
+        </div>
+    {% endif %}
+</body>
+</html>

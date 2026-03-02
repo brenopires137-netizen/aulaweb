@@ -1,0 +1,158 @@
+﻿<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>{% if form.instance.pk %}Editar{% else %}Novo{% endif %} Fornecedor</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        textarea {
+            min-height: 90px;
+            resize: vertical;
+        }
+        button {
+            background-color: #0d6efd;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        button:hover {
+            background-color: #0b5ed7;
+        }
+        a {
+            text-decoration: none;
+            color: #0d6efd;
+        }
+        ul {
+            color: #dc3545;
+            margin: 8px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>{% if form.instance.pk %}Editar Fornecedor{% else %}Novo Fornecedor{% endif %}</h1>
+
+        <form method="post">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label for="{{ form.nome_fantasia.id_for_label }}">{{ form.nome_fantasia.label }}</label>
+                {{ form.nome_fantasia }}
+                {% if form.nome_fantasia.errors %}<ul>{% for error in form.nome_fantasia.errors %}<li>{{ error }}</li>{% endfor %}</ul>{% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.razao_social.id_for_label }}">{{ form.razao_social.label }}</label>
+                {{ form.razao_social }}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.cnpj.id_for_label }}">{{ form.cnpj.label }}</label>
+                {{ form.cnpj }}
+                {% if form.cnpj.errors %}<ul>{% for error in form.cnpj.errors %}<li>{{ error }}</li>{% endfor %}</ul>{% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.tipo_fornecimento.id_for_label }}">{{ form.tipo_fornecimento.label }}</label>
+                {{ form.tipo_fornecimento }}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.categorias_fornecidas.id_for_label }}">{{ form.categorias_fornecidas.label }}</label>
+                {{ form.categorias_fornecidas }}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.itens_fornecidos.id_for_label }}">{{ form.itens_fornecidos.label }}</label>
+                {{ form.itens_fornecidos }}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.condicao_pagamento.id_for_label }}">{{ form.condicao_pagamento.label }}</label>
+                {{ form.condicao_pagamento }}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.email.id_for_label }}">{{ form.email.label }}</label>
+                {{ form.email }}
+                {% if form.email.errors %}<ul>{% for error in form.email.errors %}<li>{{ error }}</li>{% endfor %}</ul>{% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.telefone.id_for_label }}">{{ form.telefone.label }}</label>
+                {{ form.telefone }}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.endereco.id_for_label }}">{{ form.endereco.label }}</label>
+                {{ form.endereco }}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.contato.id_for_label }}">{{ form.contato.label }}</label>
+                {{ form.contato }}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.observacoes.id_for_label }}">{{ form.observacoes.label }}</label>
+                {{ form.observacoes }}
+            </div>
+
+            <button type="submit">Salvar</button>
+            <a href="{% url 'fornecedores_lista' %}">Cancelar</a>
+        </form>
+    </div>
+
+    <script>
+        // Máscara para CNPJ
+        document.getElementById('{{ form.cnpj.id_for_label }}').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            value = value.substring(0, 14); // Limita a 14 dígitos
+            value = value.replace(/(\d{2})(\d)/, '$1.$2');
+            value = value.replace(/(\d{2})\.(\d{3})(\d)/, '$1.$2.$3');
+            value = value.replace(/(\d{3})\.(\d{3})(\d)/, '$1.$2/$3');
+            value = value.replace(/\/(\d{4})(\d)/, '/$1-$2');
+            e.target.value = value;
+        });
+
+        // Máscara para Telefone
+        document.getElementById('{{ form.telefone.id_for_label }}').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            value = value.substring(0, 11); // Limita a 11 dígitos
+            if (value.length <= 10) {
+                value = value.replace(/(\d{2})(\d)/, '($1) $2');
+                value = value.replace(/(\d{4})(\d)/, '$1-$2');
+            } else {
+                value = value.replace(/(\d{2})(\d)/, '($1) $2');
+                value = value.replace(/(\d{5})(\d)/, '$1-$2');
+            }
+            e.target.value = value;
+        });
+    </script>
+</body>
+</html>

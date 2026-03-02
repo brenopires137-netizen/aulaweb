@@ -108,5 +108,21 @@
             <a href="{% url 'lista' %}">Cancelar</a>
         </form>
     </div>
+
+    <script>
+        // Máscara para Telefone
+        document.getElementById('{{ form.telefone.id_for_label }}').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            value = value.substring(0, 11); // Limita a 11 dígitos
+            if (value.length <= 10) {
+                value = value.replace(/(\d{2})(\d)/, '($1) $2');
+                value = value.replace(/(\d{4})(\d)/, '$1-$2');
+            } else {
+                value = value.replace(/(\d{2})(\d)/, '($1) $2');
+                value = value.replace(/(\d{5})(\d)/, '$1-$2');
+            }
+            e.target.value = value;
+        });
+    </script>
 </body>
 </html>
