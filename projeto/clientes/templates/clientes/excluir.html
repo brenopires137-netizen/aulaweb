@@ -1,6 +1,19 @@
-<!-- excluir.html -->
-<p>Deseja excluir {{ object.nome }}?</p>
-<form method="post">
-  {% csrf_token %}
-  <button type="submit">Excluir</button>
-</form>
+{% extends 'base_sidebar.html' %}
+
+{% block title %}Excluir Cliente{% endblock %}
+
+{% block content %}
+<h1 class="page-title">Excluir Cliente</h1>
+
+<div class="panel" style="max-width: 640px;">
+    <div class="warning-box">
+        Tem certeza que deseja excluir <strong>{{ object.nome }}</strong>?
+    </div>
+
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Confirmar Exclusao</button>
+        <a href="{% url 'lista' %}" class="btn btn-muted">Cancelar</a>
+    </form>
+</div>
+{% endblock %}

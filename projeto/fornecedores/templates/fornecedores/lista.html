@@ -1,78 +1,15 @@
-﻿<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <title>Fornecedores</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            background-color: #f5f5f5;
-        }
-        h1 {
-            color: #333;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            background-color: white;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        th, td {
-            padding: 12px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-            vertical-align: top;
-        }
-        th {
-            background-color: #0d6efd;
-            color: white;
-        }
-        tr:hover {
-            background-color: #f9f9f9;
-        }
-        a {
-            padding: 5px 10px;
-            margin-right: 5px;
-            text-decoration: none;
-            border-radius: 4px;
-            font-size: 14px;
-        }
-        .editar {
-            background-color: #ffc107;
-            color: #222;
-        }
-        .excluir {
-            background-color: #dc3545;
-            color: white;
-        }
-        .novo {
-            background-color: #198754;
-            color: white;
-            padding: 10px 20px;
-            margin-bottom: 20px;
-            display: inline-block;
-        }
-        .voltar {
-            background-color: #6c757d;
-            color: white;
-            padding: 10px 20px;
-        }
-        .vazio {
-            text-align: center;
-            padding: 30px;
-            color: #666;
-            background-color: white;
-            border-radius: 6px;
-        }
-    </style>
-</head>
-<body>
-    <h1>Lista de Fornecedores</h1>
+{% extends 'base_sidebar.html' %}
 
-    <a href="{% url 'fornecedores_criar' %}" class="novo">+ Novo Fornecedor</a>
-    <a href="{% url 'home' %}" class="voltar">Voltar</a>
+{% block title %}Fornecedores{% endblock %}
 
+{% block content %}
+<h1 class="page-title">Lista de Fornecedores</h1>
+
+<div class="actions">
+    <a href="{% url 'fornecedores_criar' %}" class="btn btn-primary">+ Novo Fornecedor</a>
+</div>
+
+<div class="panel">
     {% if fornecedores %}
         <table>
             <thead>
@@ -82,8 +19,8 @@
                     <th>Tipo</th>
                     <th>Categoria(s)</th>
                     <th>O que fornece</th>
-                    <th>Prazo/Condição</th>
-                    <th>Ações</th>
+                    <th>Cidade/Estado</th>
+                    <th>Acoes</th>
                 </tr>
             </thead>
             <tbody>
@@ -94,22 +31,17 @@
                         <td>{{ fornecedor.get_tipo_fornecimento_display }}</td>
                         <td>{{ fornecedor.categorias_fornecidas|default:'-' }}</td>
                         <td>{{ fornecedor.itens_fornecidos|default:'-' }}</td>
+                        <td>{{ fornecedor.cidade|default:'-' }} / {{ fornecedor.estado|default:'-' }}</td>
                         <td>
-                            Prazo: {{ fornecedor.prazo_entrega_dias|default:'-' }} dias<br>
-                            Pagamento: {{ fornecedor.condicao_pagamento|default:'-' }}
-                        </td>
-                        <td>
-                            <a href="{% url 'fornecedores_editar' fornecedor.pk %}" class="editar">Editar</a>
-                            <a href="{% url 'fornecedores_excluir' fornecedor.pk %}" class="excluir">Excluir</a>
+                            <a href="{% url 'fornecedores_editar' fornecedor.pk %}" class="btn btn-warning">Editar</a>
+                            <a href="{% url 'fornecedores_excluir' fornecedor.pk %}" class="btn btn-danger">Excluir</a>
                         </td>
                     </tr>
                 {% endfor %}
             </tbody>
         </table>
     {% else %}
-        <div class="vazio">
-            Nenhum fornecedor cadastrado.
-        </div>
+        <p>Nenhum fornecedor cadastrado.</p>
     {% endif %}
-</body>
-</html>
+</div>
+{% endblock %}

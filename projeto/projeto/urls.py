@@ -20,17 +20,20 @@ from rest_framework.routers import DefaultRouter
 from clientes.views import ClienteViewSet
 from produtos.views import ProdutoViewSet
 from fornecedores.views import FornecedorViewSet
+from compras.views import CompraViewSet
 
 # Criar router para API
 router = DefaultRouter()
 router.register(r'clientes', ClienteViewSet)
 router.register(r'produtos', ProdutoViewSet)
 router.register(r'fornecedores', FornecedorViewSet)
+router.register(r'compras', CompraViewSet)
 
 urlpatterns = [
     path('', include('clientes.urls')),
     path('produtos/', include('produtos.urls')),
     path('fornecedores/', include('fornecedores.urls')),
+    path('compras/', include('compras.urls')),
     path('admin/', admin.site.urls),
     path('api/', include(router.urls)),
 ]

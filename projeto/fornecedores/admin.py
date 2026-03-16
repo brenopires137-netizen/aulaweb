@@ -9,6 +9,8 @@ class FornecedorAdmin(admin.ModelAdmin):
         'cnpj',
         'tipo_fornecimento',
         'categorias_fornecidas',
+        'cidade',
+        'estado',
         'contato',
         'telefone',
     )
@@ -19,5 +21,7 @@ class FornecedorAdmin(admin.ModelAdmin):
         'categorias_fornecidas',
         'itens_fornecidos',
         'email',
+        'cidade',
+        'estado',
     )
-    list_filter = ('tipo_fornecimento',)
+    list_filter = ('tipo_fornecimento', 'estado')

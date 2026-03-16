@@ -12,10 +12,11 @@ class FornecedorForm(forms.ModelForm):
             'tipo_fornecimento',
             'categorias_fornecidas',
             'itens_fornecidos',
-            'condicao_pagamento',
             'email',
             'telefone',
             'endereco',
+            'cidade',
+            'estado',
             'contato',
             'observacoes',
         ]
@@ -32,7 +33,6 @@ class FornecedorForm(forms.ModelForm):
             'tipo_fornecimento': forms.Select(attrs={'class': 'form-control'}),
             'categorias_fornecidas': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ex.: alimentos, limpeza, elétrica'}),
             'itens_fornecidos': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Descreva produtos/serviços fornecidos', 'rows': 3}),
-            'condicao_pagamento': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ex.: 30/60 dias, boleto, PIX'}),
             'email': forms.EmailInput(attrs={
                 'class': 'form-control', 
                 'placeholder': 'exemplo@email.com',
@@ -47,6 +47,26 @@ class FornecedorForm(forms.ModelForm):
                 'title': 'Telefone no formato (00) 0000-0000 ou (00) 00000-0000'
             }),
             'endereco': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Endereço'}),
+            'cidade': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Digite as iniciais da cidade para buscar',
+                'autocomplete': 'off',
+                'list': 'cidade-opcoes',
+            }),
+            'estado': forms.Select(attrs={'class': 'form-control'}),
             'contato': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Pessoa de contato'}),
             'observacoes': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Observações adicionais', 'rows': 3}),
         }
+
+    def clean_itens_fornecidos(self):
+        valor = (self.cleaned_data.get('itens_fornecidos') or '').strip()
+        if not valor:
+            return ''
+
+        itens = [item.strip() for item in valor.split(',') if item.strip()]
+        itens_unicos = []
+        for item in itens:
+            if item not in itens_unicos:
+                itens_unicos.append(item)
+
+        return ', '.join(itens_unicos)

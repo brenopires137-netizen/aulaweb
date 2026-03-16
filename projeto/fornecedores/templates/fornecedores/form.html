@@ -1,149 +1,395 @@
-﻿<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <title>{% if form.instance.pk %}Editar{% else %}Novo{% endif %} Fornecedor</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-        }
-        .container {
-            max-width: 700px;
-            margin: 0 auto;
-        }
-        .form-group {
-            margin-bottom: 15px;
-        }
-        label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-        }
-        input, select, textarea {
-            width: 100%;
-            padding: 8px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            box-sizing: border-box;
-        }
-        textarea {
-            min-height: 90px;
-            resize: vertical;
-        }
-        button {
-            background-color: #0d6efd;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            margin-right: 10px;
-        }
-        button:hover {
-            background-color: #0b5ed7;
-        }
-        a {
-            text-decoration: none;
-            color: #0d6efd;
-        }
-        ul {
-            color: #dc3545;
-            margin: 8px 0;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h1>{% if form.instance.pk %}Editar Fornecedor{% else %}Novo Fornecedor{% endif %}</h1>
+{% extends 'base_sidebar.html' %}
 
-        <form method="post">
-            {% csrf_token %}
+{% block title %}{% if form.instance.pk %}Editar{% else %}Novo{% endif %} Fornecedor{% endblock %}
 
-            <div class="form-group">
-                <label for="{{ form.nome_fantasia.id_for_label }}">{{ form.nome_fantasia.label }}</label>
-                {{ form.nome_fantasia }}
-                {% if form.nome_fantasia.errors %}<ul>{% for error in form.nome_fantasia.errors %}<li>{{ error }}</li>{% endfor %}</ul>{% endif %}
-            </div>
+{% block content %}
+<h1 class="page-title">{% if form.instance.pk %}Editar Fornecedor{% else %}Novo Fornecedor{% endif %}</h1>
 
-            <div class="form-group">
-                <label for="{{ form.razao_social.id_for_label }}">{{ form.razao_social.label }}</label>
-                {{ form.razao_social }}
-            </div>
+<div class="panel" style="max-width: 760px;">
+    <form method="post">
+        {% csrf_token %}
 
-            <div class="form-group">
-                <label for="{{ form.cnpj.id_for_label }}">{{ form.cnpj.label }}</label>
-                {{ form.cnpj }}
-                {% if form.cnpj.errors %}<ul>{% for error in form.cnpj.errors %}<li>{{ error }}</li>{% endfor %}</ul>{% endif %}
-            </div>
+        <div class="form-group">
+            <label for="{{ form.nome_fantasia.id_for_label }}">{{ form.nome_fantasia.label }}</label>
+            {{ form.nome_fantasia }}
+            {{ form.nome_fantasia.errors }}
+        </div>
 
-            <div class="form-group">
-                <label for="{{ form.tipo_fornecimento.id_for_label }}">{{ form.tipo_fornecimento.label }}</label>
-                {{ form.tipo_fornecimento }}
-            </div>
+        <div class="form-group">
+            <label for="{{ form.razao_social.id_for_label }}">{{ form.razao_social.label }}</label>
+            {{ form.razao_social }}
+        </div>
 
-            <div class="form-group">
-                <label for="{{ form.categorias_fornecidas.id_for_label }}">{{ form.categorias_fornecidas.label }}</label>
-                {{ form.categorias_fornecidas }}
-            </div>
+        <div class="form-group">
+            <label for="{{ form.cnpj.id_for_label }}">{{ form.cnpj.label }}</label>
+            {{ form.cnpj }}
+            {{ form.cnpj.errors }}
+        </div>
 
-            <div class="form-group">
-                <label for="{{ form.itens_fornecidos.id_for_label }}">{{ form.itens_fornecidos.label }}</label>
+        <div class="form-group">
+            <label for="{{ form.tipo_fornecimento.id_for_label }}">{{ form.tipo_fornecimento.label }}</label>
+            {{ form.tipo_fornecimento }}
+        </div>
+
+        <div class="form-group">
+            <label for="{{ form.categorias_fornecidas.id_for_label }}">{{ form.categorias_fornecidas.label }}</label>
+            {{ form.categorias_fornecidas }}
+        </div>
+
+        <div class="form-group">
+            <label for="{{ form.itens_fornecidos.id_for_label }}">{{ form.itens_fornecidos.label }}</label>
+            <div id="produtos-selecionados" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px;"></div>
+
+            <input
+                type="text"
+                id="busca-produto"
+                class="form-control"
+                placeholder="Digite as iniciais do produto para buscar e selecionar"
+                autocomplete="off"
+            >
+            <datalist id="produto-opcoes"></datalist>
+            <div id="produto-sugestoes" style="margin-top:8px;"></div>
+            <small style="display:block;margin-top:6px;color:#666;">
+                Digite as iniciais para buscar. Se nao existir sugestao, pressione Enter para adicionar o nome digitado.
+            </small>
+
+            <div style="display:none;">
                 {{ form.itens_fornecidos }}
             </div>
+            {{ form.itens_fornecidos.errors }}
+        </div>
 
-            <div class="form-group">
-                <label for="{{ form.condicao_pagamento.id_for_label }}">{{ form.condicao_pagamento.label }}</label>
-                {{ form.condicao_pagamento }}
-            </div>
+        <div class="form-group">
+            <label for="{{ form.email.id_for_label }}">{{ form.email.label }}</label>
+            {{ form.email }}
+            {{ form.email.errors }}
+        </div>
 
-            <div class="form-group">
-                <label for="{{ form.email.id_for_label }}">{{ form.email.label }}</label>
-                {{ form.email }}
-                {% if form.email.errors %}<ul>{% for error in form.email.errors %}<li>{{ error }}</li>{% endfor %}</ul>{% endif %}
-            </div>
+        <div class="form-group">
+            <label for="{{ form.telefone.id_for_label }}">{{ form.telefone.label }}</label>
+            {{ form.telefone }}
+        </div>
 
-            <div class="form-group">
-                <label for="{{ form.telefone.id_for_label }}">{{ form.telefone.label }}</label>
-                {{ form.telefone }}
-            </div>
+        <div class="form-group">
+            <label for="{{ form.endereco.id_for_label }}">{{ form.endereco.label }}</label>
+            {{ form.endereco }}
+        </div>
 
-            <div class="form-group">
-                <label for="{{ form.endereco.id_for_label }}">{{ form.endereco.label }}</label>
-                {{ form.endereco }}
-            </div>
+        <div class="form-group">
+            <label for="{{ form.estado.id_for_label }}">{{ form.estado.label }}</label>
+            {{ form.estado }}
+        </div>
 
-            <div class="form-group">
-                <label for="{{ form.contato.id_for_label }}">{{ form.contato.label }}</label>
-                {{ form.contato }}
-            </div>
+        <div class="form-group">
+            <label for="{{ form.cidade.id_for_label }}">{{ form.cidade.label }}</label>
+            {{ form.cidade }}
+            <datalist id="cidade-opcoes"></datalist>
+        </div>
 
-            <div class="form-group">
-                <label for="{{ form.observacoes.id_for_label }}">{{ form.observacoes.label }}</label>
-                {{ form.observacoes }}
-            </div>
+        <div class="form-group">
+            <label for="{{ form.contato.id_for_label }}">{{ form.contato.label }}</label>
+            {{ form.contato }}
+        </div>
 
-            <button type="submit">Salvar</button>
-            <a href="{% url 'fornecedores_lista' %}">Cancelar</a>
-        </form>
-    </div>
+        <div class="form-group">
+            <label for="{{ form.observacoes.id_for_label }}">{{ form.observacoes.label }}</label>
+            {{ form.observacoes }}
+        </div>
 
-    <script>
-        // Máscara para CNPJ
-        document.getElementById('{{ form.cnpj.id_for_label }}').addEventListener('input', function(e) {
+        <button type="submit" class="btn btn-primary">Salvar</button>
+        <a href="{% url 'fornecedores_lista' %}" class="btn btn-muted">Cancelar</a>
+    </form>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+{{ produtos_disponiveis|json_script:"produtos-disponiveis-data" }}
+<script>
+    const produtosDisponiveis = JSON.parse(document.getElementById('produtos-disponiveis-data').textContent);
+
+    const itensFornecidosInput = document.getElementById('{{ form.itens_fornecidos.id_for_label }}');
+    const buscaProdutoInput = document.getElementById('busca-produto');
+    const produtoDatalist = document.getElementById('produto-opcoes');
+    const produtoSugestoesContainer = document.getElementById('produto-sugestoes');
+    const produtosSelecionadosContainer = document.getElementById('produtos-selecionados');
+    let produtosSelecionados = [];
+    let opcoesFiltradasAtuais = [];
+
+    function normalizarTexto(texto) {
+        return (texto || '')
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '')
+            .toLowerCase();
+    }
+
+    function atualizarCampoItensFornecidos() {
+        itensFornecidosInput.value = produtosSelecionados.join(', ');
+    }
+
+    function renderizarProdutosSelecionados() {
+        produtosSelecionadosContainer.innerHTML = '';
+
+        produtosSelecionados.forEach(function(nomeProduto) {
+            const item = document.createElement('span');
+            item.style.display = 'inline-flex';
+            item.style.alignItems = 'center';
+            item.style.gap = '8px';
+            item.style.padding = '4px 8px';
+            item.style.border = '1px solid #cfd6dd';
+            item.style.borderRadius = '14px';
+            item.style.background = '#f6f8fb';
+            item.style.fontSize = '13px';
+
+            const nome = document.createElement('span');
+            nome.textContent = nomeProduto;
+
+            const removerBtn = document.createElement('button');
+            removerBtn.type = 'button';
+            removerBtn.textContent = 'x';
+            removerBtn.title = 'Remover produto';
+            removerBtn.style.border = 'none';
+            removerBtn.style.background = 'transparent';
+            removerBtn.style.cursor = 'pointer';
+            removerBtn.style.fontWeight = 'bold';
+            removerBtn.style.color = '#9a2d2d';
+            removerBtn.addEventListener('click', function() {
+                produtosSelecionados = produtosSelecionados.filter(function(itemAtual) {
+                    return itemAtual !== nomeProduto;
+                });
+                atualizarCampoItensFornecidos();
+                renderizarProdutosSelecionados();
+            });
+
+            item.appendChild(nome);
+            item.appendChild(removerBtn);
+            produtosSelecionadosContainer.appendChild(item);
+        });
+    }
+
+    function atualizarSugestoesProduto(filtro) {
+        const filtroNormalizado = normalizarTexto(filtro || '');
+        const opcoes = produtosDisponiveis
+            .filter(function(nomeProduto) {
+                if (produtosSelecionados.includes(nomeProduto)) {
+                    return false;
+                }
+                const nomeNormalizado = normalizarTexto(nomeProduto);
+                return nomeNormalizado.startsWith(filtroNormalizado) || nomeNormalizado.includes(filtroNormalizado);
+            })
+            .slice(0, 20);
+
+        opcoesFiltradasAtuais = opcoes;
+
+        produtoDatalist.innerHTML = '';
+        opcoes.forEach(function(nomeProduto) {
+            const option = document.createElement('option');
+            option.value = nomeProduto;
+            produtoDatalist.appendChild(option);
+        });
+        buscaProdutoInput.setAttribute('list', 'produto-opcoes');
+
+        produtoSugestoesContainer.innerHTML = '';
+        if (!opcoes.length || !filtroNormalizado) {
+            return;
+        }
+
+        const lista = document.createElement('div');
+        lista.style.border = '1px solid #d7dde3';
+        lista.style.borderRadius = '8px';
+        lista.style.background = '#fff';
+        lista.style.maxHeight = '170px';
+        lista.style.overflowY = 'auto';
+
+        opcoes.forEach(function(nomeProduto) {
+            const item = document.createElement('button');
+            item.type = 'button';
+            item.textContent = nomeProduto;
+            item.style.display = 'block';
+            item.style.width = '100%';
+            item.style.textAlign = 'left';
+            item.style.border = 'none';
+            item.style.borderBottom = '1px solid #edf1f5';
+            item.style.padding = '8px 10px';
+            item.style.background = 'transparent';
+            item.style.cursor = 'pointer';
+
+            item.addEventListener('click', function() {
+                adicionarProdutoSelecionado(nomeProduto);
+                produtoSugestoesContainer.innerHTML = '';
+            });
+
+            lista.appendChild(item);
+        });
+
+        produtoSugestoesContainer.appendChild(lista);
+    }
+
+    function adicionarProdutoSelecionado(nomeProduto) {
+        const nomeLimpo = (nomeProduto || '').trim();
+        if (!nomeLimpo) {
+            return;
+        }
+
+        let nomeExato = produtosDisponiveis.find(function(item) {
+            return normalizarTexto(item) === normalizarTexto(nomeLimpo);
+        });
+
+        if (!nomeExato) {
+            nomeExato = opcoesFiltradasAtuais[0] || null;
+        }
+
+        if (!nomeExato) {
+            nomeExato = nomeLimpo;
+        }
+
+        if (!nomeExato || produtosSelecionados.includes(nomeExato)) {
+            return;
+        }
+
+        produtosSelecionados.push(nomeExato);
+        atualizarCampoItensFornecidos();
+        renderizarProdutosSelecionados();
+        buscaProdutoInput.value = '';
+        atualizarSugestoesProduto('');
+        produtoSugestoesContainer.innerHTML = '';
+    }
+
+    function carregarItensExistentes() {
+        const valorAtual = (itensFornecidosInput.value || '').trim();
+        if (!valorAtual) {
+            return;
+        }
+
+        const itens = valorAtual.split(',').map(function(item) {
+            return item.trim();
+        }).filter(Boolean);
+
+        itens.forEach(function(item) {
+            const nomeExato = produtosDisponiveis.find(function(produto) {
+                return normalizarTexto(produto) === normalizarTexto(item);
+            });
+            const itemFinal = nomeExato || item;
+            if (itemFinal && !produtosSelecionados.includes(itemFinal)) {
+                produtosSelecionados.push(itemFinal);
+            }
+        });
+
+        atualizarCampoItensFornecidos();
+        renderizarProdutosSelecionados();
+    }
+
+    buscaProdutoInput.addEventListener('input', function(e) {
+        atualizarSugestoesProduto(e.target.value);
+    });
+
+    buscaProdutoInput.addEventListener('change', function(e) {
+        adicionarProdutoSelecionado(e.target.value);
+    });
+
+    buscaProdutoInput.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            adicionarProdutoSelecionado(e.target.value);
+        }
+    });
+
+    carregarItensExistentes();
+    atualizarSugestoesProduto('');
+
+    const estadoSelect = document.getElementById('{{ form.estado.id_for_label }}');
+    const cidadeInput = document.getElementById('{{ form.cidade.id_for_label }}');
+    const cidadeDatalist = document.getElementById('cidade-opcoes');
+    let cidadesEstadoAtual = [];
+
+    function atualizarSugestoes(filtro = '') {
+        const filtroNormalizado = normalizarTexto(filtro);
+        const cidadesFiltradas = cidadesEstadoAtual.filter(function(cidade) {
+            const cidadeNormalizada = normalizarTexto(cidade);
+            return cidadeNormalizada.startsWith(filtroNormalizado) || cidadeNormalizada.includes(filtroNormalizado);
+        }).slice(0, 50);
+
+        cidadeDatalist.innerHTML = '';
+        cidadesFiltradas.forEach(function(cidade) {
+            const option = document.createElement('option');
+            option.value = cidade;
+            cidadeDatalist.appendChild(option);
+        });
+    }
+
+    async function carregarCidadesDoEstado(uf) {
+        cidadesEstadoAtual = [];
+        cidadeDatalist.innerHTML = '';
+
+        if (!uf) {
+            cidadeInput.value = '';
+            cidadeInput.disabled = true;
+            cidadeInput.placeholder = 'Selecione primeiro o estado';
+            return;
+        }
+
+        cidadeInput.disabled = true;
+        cidadeInput.value = '';
+        cidadeInput.placeholder = 'Carregando cidades...';
+
+        try {
+            const resposta = await fetch('https://servicodados.ibge.gov.br/api/v1/localidades/estados/' + uf + '/municipios');
+            if (!resposta.ok) {
+                throw new Error('Falha ao buscar cidades');
+            }
+
+            const dados = await resposta.json();
+            cidadesEstadoAtual = dados.map(function(item) {
+                return item.nome;
+            });
+
+            cidadeInput.disabled = false;
+            cidadeInput.placeholder = 'Digite as iniciais da cidade para buscar';
+            atualizarSugestoes(cidadeInput.value);
+        } catch (error) {
+            cidadeInput.disabled = false;
+            cidadeInput.placeholder = 'Nao foi possivel carregar. Digite a cidade';
+        }
+    }
+
+    estadoSelect.addEventListener('change', function(e) {
+        carregarCidadesDoEstado(e.target.value);
+    });
+
+    cidadeInput.addEventListener('input', function(e) {
+        atualizarSugestoes(e.target.value);
+    });
+
+    if (estadoSelect.value) {
+        const cidadeAtual = cidadeInput.value;
+        carregarCidadesDoEstado(estadoSelect.value).then(function() {
+            if (cidadeAtual) {
+                cidadeInput.value = cidadeAtual;
+                atualizarSugestoes(cidadeAtual);
+            }
+        });
+    } else {
+        cidadeInput.disabled = true;
+        cidadeInput.placeholder = 'Selecione primeiro o estado';
+    }
+
+    const cnpjInput = document.getElementById('{{ form.cnpj.id_for_label }}');
+    if (cnpjInput) {
+        cnpjInput.addEventListener('input', function(e) {
             let value = e.target.value.replace(/\D/g, '');
-            value = value.substring(0, 14); // Limita a 14 dígitos
+            value = value.substring(0, 14);
             value = value.replace(/(\d{2})(\d)/, '$1.$2');
             value = value.replace(/(\d{2})\.(\d{3})(\d)/, '$1.$2.$3');
             value = value.replace(/(\d{3})\.(\d{3})(\d)/, '$1.$2/$3');
             value = value.replace(/\/(\d{4})(\d)/, '/$1-$2');
             e.target.value = value;
         });
+    }
 
-        // Máscara para Telefone
-        document.getElementById('{{ form.telefone.id_for_label }}').addEventListener('input', function(e) {
+    const telefoneInput = document.getElementById('{{ form.telefone.id_for_label }}');
+    if (telefoneInput) {
+        telefoneInput.addEventListener('input', function(e) {
             let value = e.target.value.replace(/\D/g, '');
-            value = value.substring(0, 11); // Limita a 11 dígitos
+            value = value.substring(0, 11);
             if (value.length <= 10) {
                 value = value.replace(/(\d{2})(\d)/, '($1) $2');
                 value = value.replace(/(\d{4})(\d)/, '$1-$2');
@@ -153,6 +399,6 @@
             }
             e.target.value = value;
         });
-    </script>
-</body>
-</html>
+    }
+</script>
+{% endblock %}

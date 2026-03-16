@@ -1,0 +1,32 @@
+{% extends 'base_sidebar.html' %}
+
+{% block title %}Detalhes da Compra{% endblock %}
+
+{% block content %}
+<h1 class="page-title">Detalhes da Compra #{{ compra.pk }}</h1>
+
+<div class="panel" style="max-width: 860px;">
+    <h3 style="margin-bottom: 10px;">Dados da Compra</h3>
+    <p><strong>Produto:</strong> {{ compra.produto.nome }}</p>
+    <p><strong>Fornecedor:</strong> {{ compra.fornecedor.nome_fantasia }}</p>
+    <p><strong>Preço:</strong> R$ {{ compra.preco }}</p>
+    <p><strong>Quantidade comprada:</strong> {{ compra.quantidade }}</p>
+    <p><strong>Total do produto em estoque:</strong> {{ compra.produto.quantidade }}</p>
+    <p><strong>Data da compra:</strong> {{ compra.data_compra|date:"d/m/Y" }}</p>
+
+    <hr style="margin: 16px 0;">
+
+    <h3 style="margin-bottom: 10px;">Dados do Fornecedor</h3>
+    <p><strong>Razão social:</strong> {{ compra.fornecedor.razao_social|default:'-' }}</p>
+    <p><strong>CNPJ:</strong> {{ compra.fornecedor.cnpj|default:'-' }}</p>
+    <p><strong>Email:</strong> {{ compra.fornecedor.email|default:'-' }}</p>
+    <p><strong>Telefone:</strong> {{ compra.fornecedor.telefone|default:'-' }}</p>
+    <p><strong>Cidade/UF:</strong> {{ compra.fornecedor.cidade|default:'-' }} / {{ compra.fornecedor.estado|default:'-' }}</p>
+    <p><strong>Contato:</strong> {{ compra.fornecedor.contato|default:'-' }}</p>
+
+    <div style="margin-top: 16px;">
+        <a href="{% url 'compras_lista' %}" class="btn btn-muted">Voltar</a>
+        <a href="{% url 'compras_editar' compra.pk %}" class="btn btn-warning">Editar</a>
+    </div>
+</div>
+{% endblock %}

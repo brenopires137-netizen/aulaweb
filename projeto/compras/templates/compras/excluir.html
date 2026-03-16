@@ -1,0 +1,20 @@
+{% extends 'base_sidebar.html' %}
+
+{% block title %}Excluir Compra{% endblock %}
+
+{% block content %}
+<h1 class="page-title">Excluir Compra</h1>
+
+<div class="panel" style="max-width: 640px;">
+    <div class="warning-box">
+        Tem certeza que deseja excluir a compra <strong>#{{ object.pk }}</strong>
+        do produto <strong>{{ object.produto.nome }}</strong>?
+    </div>
+
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Confirmar Exclusão</button>
+        <a href="{% url 'compras_lista' %}" class="btn btn-muted">Cancelar</a>
+    </form>
+</div>
+{% endblock %}

@@ -1,17 +1,25 @@
 from django.shortcuts import render
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
+from django.db.models import Sum
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from .models import Produto
 from .forms import ProdutoForm
 from .serializers import ProdutoSerializer
+from compras.models import Compra
 
 class ProdutoListView(ListView):
     model = Produto
     template_name = "produtos/lista.html"
     context_object_name = "produtos"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['total_itens_comprados'] = Compra.objects.aggregate(total=Sum('quantidade'))['total'] or 0
+        context['total_estoque_geral'] = Produto.objects.aggregate(total=Sum('quantidade'))['total'] or 0
+        return context
 
 class ProdutoCreateView(CreateView):
     model = Produto

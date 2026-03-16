@@ -1,0 +1,48 @@
+{% extends 'base_sidebar.html' %}
+
+{% block title %}Compras{% endblock %}
+
+{% block content %}
+<h1 class="page-title">Compras</h1>
+
+<div class="actions">
+    <a href="{% url 'compras_criar' %}" class="btn btn-primary">+ Nova Compra</a>
+</div>
+
+<div class="panel">
+    {% if compras %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Cód.</th>
+                    <th>Produto</th>
+                    <th>Fornecedor</th>
+                    <th>Preço</th>
+                    <th>Quantidade</th>
+                    <th>Data da Compra</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for compra in compras %}
+                    <tr>
+                        <td>#{{ compra.pk }}</td>
+                        <td>{{ compra.produto.nome }}</td>
+                        <td>{{ compra.fornecedor.nome_fantasia }}</td>
+                        <td>R$ {{ compra.preco }}</td>
+                        <td>{{ compra.quantidade }}</td>
+                        <td>{{ compra.data_compra|date:"d/m/Y" }}</td>
+                        <td>
+                            <a href="{% url 'compras_detalhes' compra.pk %}" class="btn btn-primary">Detalhes</a>
+                            <a href="{% url 'compras_editar' compra.pk %}" class="btn btn-warning">Editar</a>
+                            <a href="{% url 'compras_excluir' compra.pk %}" class="btn btn-danger">Excluir</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>Nenhuma compra cadastrada.</p>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,135 @@
+{% extends 'base_sidebar.html' %}
+
+{% block title %}{% if form.instance.pk %}Editar{% else %}Nova{% endif %} Compra{% endblock %}
+
+{% block content %}
+<h1 class="page-title">{% if form.instance.pk %}Editar Compra{% else %}Nova Compra{% endif %}</h1>
+
+<div class="panel" style="max-width: 760px;">
+    {% if form.non_field_errors %}
+        <ul class="errorlist">
+            {% for error in form.non_field_errors %}
+                <li>{{ error }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    <form method="post">
+        {% csrf_token %}
+
+        <div class="form-group">
+            <label for="{{ form.fornecedor.id_for_label }}">Fornecedor</label>
+            {{ form.fornecedor }}
+            {{ form.fornecedor.errors }}
+        </div>
+
+        <div class="form-group">
+            <label for="produto_select">Produto</label>
+            <select id="produto_select" class="form-control" disabled>
+                <option value="">---------</option>
+            </select>
+            {{ form.produto_nome }}
+            <small id="produto-ajuda" style="display:block;margin-top:6px;color:#666;">
+                Selecione um fornecedor para ver os produtos que ele fornece.
+            </small>
+            {% for error in form.produto_nome.errors %}
+                <span style="color:#b94a48;font-size:0.9em;">{{ error }}</span>
+            {% endfor %}
+        </div>
+
+        <div class="form-group">
+            <label for="{{ form.preco.id_for_label }}">Preço</label>
+            {{ form.preco }}
+            {{ form.preco.errors }}
+        </div>
+
+        <div class="form-group">
+            <label for="{{ form.data_compra.id_for_label }}">Data da Compra</label>
+            {{ form.data_compra }}
+            {{ form.data_compra.errors }}
+        </div>
+
+        <div class="form-group">
+            <label for="{{ form.quantidade.id_for_label }}">Quantidade</label>
+            {{ form.quantidade }}
+            {{ form.quantidade.errors }}
+        </div>
+
+        <button type="submit" class="btn btn-primary">Salvar</button>
+        <a href="{% url 'compras_lista' %}" class="btn btn-muted">Cancelar</a>
+    </form>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+{{ itens_por_fornecedor|json_script:"itens-por-fornecedor-data" }}
+<script>
+    const fornecedorSelect = document.getElementById('{{ form.fornecedor.id_for_label }}');
+    const produtoSelect = document.getElementById('produto_select');
+    const produtoNomeHidden = document.getElementById('id_produto_nome');
+    const produtoAjuda = document.getElementById('produto-ajuda');
+    const itensPorFornecedor = JSON.parse(document.getElementById('itens-por-fornecedor-data').textContent);
+
+    produtoSelect.addEventListener('change', function() {
+        produtoNomeHidden.value = produtoSelect.value;
+    });
+
+    function renderizarProdutosDoFornecedor() {
+        const fornecedorId = fornecedorSelect.value;
+        const produtoAtual = produtoNomeHidden.value;
+
+        produtoSelect.innerHTML = '';
+
+        const opcaoPadrao = document.createElement('option');
+        opcaoPadrao.value = '';
+        opcaoPadrao.textContent = '---------';
+        produtoSelect.appendChild(opcaoPadrao);
+
+        if (!fornecedorId) {
+            produtoSelect.disabled = true;
+            produtoNomeHidden.value = '';
+            produtoAjuda.textContent = 'Selecione um fornecedor para ver os produtos que ele fornece.';
+            return;
+        }
+
+        produtoSelect.disabled = false;
+
+        const itens = itensPorFornecedor[fornecedorId] || [];
+
+        itens.forEach(function(item) {
+            const option = document.createElement('option');
+            option.value = item;
+            option.textContent = item;
+            produtoSelect.appendChild(option);
+        });
+
+        if (!itens.length) {
+            produtoAjuda.textContent = 'Este fornecedor nao possui itens registrados. Adicione itens na aba Fornecedores.';
+        } else {
+            produtoAjuda.textContent = 'Produtos do fornecedor selecionado.';
+        }
+
+        if (produtoAtual) {
+            const match = Array.from(produtoSelect.options).find(function(o) {
+                return o.value === produtoAtual;
+            });
+            if (match) {
+                produtoSelect.value = produtoAtual;
+            } else {
+                const extra = document.createElement('option');
+                extra.value = produtoAtual;
+                extra.textContent = produtoAtual;
+                extra.selected = true;
+                produtoSelect.appendChild(extra);
+            }
+        }
+    }
+
+    fornecedorSelect.addEventListener('change', function() {
+        produtoNomeHidden.value = '';
+        renderizarProdutosDoFornecedor();
+    });
+
+    renderizarProdutosDoFornecedor();
+</script>
+{% endblock %}
