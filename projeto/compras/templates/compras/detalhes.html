@@ -9,7 +9,8 @@
     <h3 style="margin-bottom: 10px;">Dados da Compra</h3>
     <p><strong>Produto:</strong> {{ compra.produto.nome }}</p>
     <p><strong>Fornecedor:</strong> {{ compra.fornecedor.nome_fantasia }}</p>
-    <p><strong>Preço:</strong> R$ {{ compra.preco }}</p>
+    <p><strong>Preco de compra:</strong> R$ {{ compra.preco_compra }}</p>
+    <p><strong>Preco de venda:</strong> R$ {{ compra.preco_venda }}</p>
     <p><strong>Quantidade comprada:</strong> {{ compra.quantidade }}</p>
     <p><strong>Total do produto em estoque:</strong> {{ compra.produto.quantidade }}</p>
     <p><strong>Data da compra:</strong> {{ compra.data_compra|date:"d/m/Y" }}</p>

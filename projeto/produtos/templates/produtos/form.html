@@ -24,12 +24,6 @@
         </div>
 
         <div class="form-group">
-            <label for="{{ form.preco.id_for_label }}">{{ form.preco.label }}</label>
-            {{ form.preco }}
-            {{ form.preco.errors }}
-        </div>
-
-        <div class="form-group">
             <label for="{{ form.descricao.id_for_label }}">{{ form.descricao.label }}</label>
             {{ form.descricao }}
         </div>
@@ -37,6 +31,7 @@
         <div class="form-group">
             <label for="{{ form.quantidade.id_for_label }}">{{ form.quantidade.label }}</label>
             {{ form.quantidade }}
+            {{ form.quantidade.errors }}
         </div>
 
         <div class="form-group">
@@ -50,8 +45,9 @@
         </div>
 
         <div class="form-group">
-            <label for="{{ form.data_validade.id_for_label }}">{{ form.data_validade.label }}</label>
-            {{ form.data_validade }}
+            <label for="{{ form.data_compra.id_for_label }}">{{ form.data_compra.label }}</label>
+            {{ form.data_compra }}
+            {{ form.data_compra.errors }}
         </div>
 
         <button type="submit" class="btn btn-primary">Salvar</button>

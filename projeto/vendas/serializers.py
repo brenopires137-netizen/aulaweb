@@ -1,22 +1,22 @@
 from rest_framework import serializers
-from .models import Compra
+
+from .models import Venda
 
 
-class CompraSerializer(serializers.ModelSerializer):
+class VendaSerializer(serializers.ModelSerializer):
+    cliente_nome = serializers.ReadOnlyField(source='cliente.nome')
     produto_nome = serializers.ReadOnlyField(source='produto.nome')
-    fornecedor_nome = serializers.ReadOnlyField(source='fornecedor.nome_fantasia')
 
     class Meta:
-        model = Compra
+        model = Venda
         fields = [
             'id',
+            'cliente',
+            'cliente_nome',
             'produto',
             'produto_nome',
-            'fornecedor',
-            'fornecedor_nome',
-            'preco_compra',
-            'preco_venda',
-            'data_compra',
+            'preco_unitario',
+            'data_venda',
             'quantidade',
             'confirmada',
             'confirmado_em',

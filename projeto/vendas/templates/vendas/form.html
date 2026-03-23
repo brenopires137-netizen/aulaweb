@@ -1,0 +1,83 @@
+{% extends 'base_sidebar.html' %}
+
+{% block title %}{% if form.instance.pk %}Editar{% else %}Nova{% endif %} Venda{% endblock %}
+
+{% block content %}
+<h1 class="page-title">{% if form.instance.pk %}Editar Venda{% else %}Nova Venda{% endif %}</h1>
+
+<div class="panel" style="max-width: 760px;">
+    {% if form.non_field_errors %}
+        <ul class="errorlist">
+            {% for error in form.non_field_errors %}
+                <li>{{ error }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    <form method="post">
+        {% csrf_token %}
+
+        <div class="form-group">
+            <label for="{{ form.cliente.id_for_label }}">Cliente</label>
+            {{ form.cliente }}
+            {{ form.cliente.errors }}
+        </div>
+
+        <div class="form-group">
+            <label for="{{ form.produto.id_for_label }}">Produto</label>
+            {{ form.produto }}
+            {{ form.produto.errors }}
+        </div>
+
+        <div class="form-group">
+            <label for="{{ form.preco_unitario.id_for_label }}">Preco Unitario</label>
+            {{ form.preco_unitario }}
+            {{ form.preco_unitario.errors }}
+        </div>
+
+        <div class="form-group">
+            <label for="{{ form.data_venda.id_for_label }}">Data da Venda</label>
+            {{ form.data_venda }}
+            {{ form.data_venda.errors }}
+        </div>
+
+        <div class="form-group">
+            <label for="{{ form.quantidade.id_for_label }}">Quantidade</label>
+            {{ form.quantidade }}
+            {{ form.quantidade.errors }}
+        </div>
+
+        <button type="submit" class="btn btn-primary">Salvar</button>
+        <a href="{% url 'vendas_lista' %}" class="btn btn-muted">Cancelar</a>
+    </form>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+{{ precos_por_produto|json_script:"precos-por-produto-data" }}
+<script>
+    const produtoSelect = document.getElementById('{{ form.produto.id_for_label }}');
+    const precoUnitarioInput = document.getElementById('{{ form.preco_unitario.id_for_label }}');
+    const precosPorProduto = JSON.parse(document.getElementById('precos-por-produto-data').textContent);
+
+    function atualizarPrecoVenda() {
+        const produtoId = produtoSelect.value;
+        if (!produtoId) {
+            return;
+        }
+
+        const precoSugerido = precosPorProduto[produtoId];
+        if (precoSugerido && !precoUnitarioInput.value) {
+            precoUnitarioInput.value = precoSugerido;
+        }
+    }
+
+    produtoSelect.addEventListener('change', function() {
+        const produtoId = produtoSelect.value;
+        const precoSugerido = precosPorProduto[produtoId] || '';
+        precoUnitarioInput.value = precoSugerido;
+    });
+
+    atualizarPrecoVenda();
+</script>
+{% endblock %}

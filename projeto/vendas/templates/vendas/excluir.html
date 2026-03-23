@@ -1,0 +1,21 @@
+{% extends 'base_sidebar.html' %}
+
+{% block title %}Excluir Venda{% endblock %}
+
+{% block content %}
+<h1 class="page-title">Excluir Venda</h1>
+
+<div class="panel" style="max-width: 640px;">
+    <div class="warning-box">
+        Tem certeza que deseja excluir a venda <strong>#{{ object.pk }}</strong>
+        do produto <strong>{{ object.produto.nome }}</strong> para o cliente
+        <strong>{{ object.cliente.nome }}</strong>?
+    </div>
+
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Confirmar Exclusao</button>
+        <a href="{% url 'vendas_lista' %}" class="btn btn-muted">Cancelar</a>
+    </form>
+</div>
+{% endblock %}

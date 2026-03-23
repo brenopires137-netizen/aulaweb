@@ -7,31 +7,88 @@
 
 <div class="actions">
     <a href="{% url 'compras_criar' %}" class="btn btn-primary">+ Nova Compra</a>
+    {% if compras_pendentes %}
+        <form method="post" action="{% url 'compras_confirmar_todas' %}" style="display:inline-block;">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-warning">Confirmar Todas as Compras</button>
+        </form>
+    {% endif %}
 </div>
 
 <div class="panel">
-    {% if compras %}
+    <h2 style="margin-bottom: 12px;">Compras em Confirmação</h2>
+    {% if compras_pendentes %}
         <table>
             <thead>
                 <tr>
                     <th>Cód.</th>
                     <th>Produto</th>
                     <th>Fornecedor</th>
-                    <th>Preço</th>
+                    <th>Preco Compra</th>
+                    <th>Preco Venda</th>
                     <th>Quantidade</th>
                     <th>Data da Compra</th>
+                    <th>Status</th>
                     <th>Ações</th>
                 </tr>
             </thead>
             <tbody>
-                {% for compra in compras %}
+                {% for compra in compras_pendentes %}
                     <tr>
                         <td>#{{ compra.pk }}</td>
                         <td>{{ compra.produto.nome }}</td>
                         <td>{{ compra.fornecedor.nome_fantasia }}</td>
-                        <td>R$ {{ compra.preco }}</td>
+                        <td>R$ {{ compra.preco_compra }}</td>
+                        <td>R$ {{ compra.preco_venda }}</td>
                         <td>{{ compra.quantidade }}</td>
                         <td>{{ compra.data_compra|date:"d/m/Y" }}</td>
+                        <td>Compra em confirmação</td>
+                        <td>
+                            <a href="{% url 'compras_detalhes' compra.pk %}" class="btn btn-primary">Detalhes</a>
+                            <a href="{% url 'compras_editar' compra.pk %}" class="btn btn-warning">Editar</a>
+                            <a href="{% url 'compras_excluir' compra.pk %}" class="btn btn-danger">Excluir</a>
+                            <form method="post" action="{% url 'compras_confirmar' compra.pk %}" style="display:inline-block; margin-top: 6px;">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-primary">Confirmar Compra</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>Nenhuma compra pendente de confirmação.</p>
+    {% endif %}
+</div>
+
+<div class="panel" style="margin-top: 14px;">
+    <h2 style="margin-bottom: 12px;">Compras Confirmadas</h2>
+    {% if compras_confirmadas %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Cód.</th>
+                    <th>Produto</th>
+                    <th>Fornecedor</th>
+                    <th>Preco Compra</th>
+                    <th>Preco Venda</th>
+                    <th>Quantidade</th>
+                    <th>Data da Compra</th>
+                    <th>Status</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for compra in compras_confirmadas %}
+                    <tr>
+                        <td>#{{ compra.pk }}</td>
+                        <td>{{ compra.produto.nome }}</td>
+                        <td>{{ compra.fornecedor.nome_fantasia }}</td>
+                        <td>R$ {{ compra.preco_compra }}</td>
+                        <td>R$ {{ compra.preco_venda }}</td>
+                        <td>{{ compra.quantidade }}</td>
+                        <td>{{ compra.data_compra|date:"d/m/Y" }}</td>
+                        <td>Confirmada</td>
                         <td>
                             <a href="{% url 'compras_detalhes' compra.pk %}" class="btn btn-primary">Detalhes</a>
                             <a href="{% url 'compras_editar' compra.pk %}" class="btn btn-warning">Editar</a>
@@ -42,7 +99,7 @@
             </tbody>
         </table>
     {% else %}
-        <p>Nenhuma compra cadastrada.</p>
+        <p>Nenhuma compra confirmada.</p>
     {% endif %}
 </div>
 {% endblock %}

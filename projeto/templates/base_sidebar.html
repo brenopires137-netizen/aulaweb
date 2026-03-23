@@ -191,7 +191,14 @@
             <a class="menu-item" href="{% url 'produtos_lista' %}">Produtos</a>
             <a class="menu-item" href="{% url 'fornecedores_lista' %}">Fornecedores</a>
             <a class="menu-item" href="{% url 'compras_lista' %}">Compras</a>
-            <a class="menu-item" href="/admin/">Administracao</a>
+            <a class="menu-item" href="{% url 'vendas_lista' %}">Vendas</a>
+            {% if request.user.is_staff %}
+                <a class="menu-item" href="/admin/">Administracao</a>
+            {% endif %}
+            <form method="post" action="{% url 'logout' %}" style="padding: 0 20px; margin-top: 10px;">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-muted" style="width: 100%; margin-right: 0;">Sair</button>
+            </form>
         </nav>
     </aside>
 

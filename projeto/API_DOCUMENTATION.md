@@ -1,187 +1,325 @@
-# Documentação da API REST
+# Documentacao da API (Estado Atual do Projeto)
 
-## Base URL
+## 1. Visao Geral
+
+Este projeto expoe uma API REST com Django REST Framework para os modulos:
+
+- `clientes`
+- `produtos`
+- `fornecedores`
+- `compras`
+- `vendas`
+
+URL base:
+
 ```
 http://127.0.0.1:8000/api/
 ```
 
-## Endpoints Disponíveis
+## 2. Convencoes da API
 
-### Clientes
+### 2.1 Paginacao
 
-#### 1. Listar todos os clientes
-```
-GET /api/clientes/
-```
-Retorna uma lista paginada de clientes.
+- Paginacao padrao: `PageNumberPagination`
+- Tamanho da pagina: `10`
 
-**Resposta de exemplo:**
+Formato de resposta para listagens:
+
 ```json
 {
-  "count": 3,
+  "count": 1,
   "next": null,
   "previous": null,
-  "results": [
-    {
-      "id": 1,
-      "nome": "breno",
-      "email": "breno5@gmail.com",
-      "telefone": "4002-8922",
-      "criado_em": "2026-02-09T16:32:40.879700-03:00"
-    }
-  ]
+  "results": []
 }
 ```
 
-#### 2. Obter um cliente específico
+Exemplo:
+
 ```
-GET /api/clientes/{id}/
+GET /api/clientes/?page=2
 ```
 
-#### 3. Criar um novo cliente
+### 2.2 Content-Type
+
+Use JSON para escrita:
+
 ```
-POST /api/clientes/
 Content-Type: application/json
+```
 
+### 2.3 Codigos HTTP Comuns
+
+- `200 OK` sucesso (GET/PUT/PATCH/acoes customizadas)
+- `201 Created` criado com sucesso
+- `204 No Content` removido com sucesso
+- `400 Bad Request` payload/regra invalida
+- `404 Not Found` recurso nao encontrado
+- `405 Method Not Allowed` metodo nao suportado
+
+## 3. Autenticacao
+
+- Interface web usa login/logout de sessao (`/login`, `/logout`).
+- Endpoints da API atualmente nao exigem token/JWT.
+
+## 4. Endpoints por Modulo
+
+### 4.1 Clientes
+
+CRUD:
+
+- `GET /api/clientes/`
+- `GET /api/clientes/{id}/`
+- `POST /api/clientes/`
+- `PUT /api/clientes/{id}/`
+- `PATCH /api/clientes/{id}/`
+- `DELETE /api/clientes/{id}/`
+
+Acao customizada:
+
+- `GET /api/clientes/por_email/?email=...`
+
+Campos principais:
+
+- `id` (somente leitura)
+- `nome`
+- `email`
+- `telefone`
+- `criado_em` (somente leitura)
+
+Exemplo de criacao:
+
+```json
 {
-  "nome": "João Silva",
+  "nome": "Joao Silva",
   "email": "joao@example.com",
   "telefone": "11999999999"
 }
 ```
 
-#### 4. Atualizar um cliente
-```
-PUT /api/clientes/{id}/
-PATCH /api/clientes/{id}/
-```
+### 4.2 Produtos
 
-#### 5. Deletar um cliente
-```
-DELETE /api/clientes/{id}/
-```
+CRUD:
 
-#### 6. Buscar clientes por email
-```
-GET /api/clientes/por_email/?email=breno5@gmail.com
-```
+- `GET /api/produtos/`
+- `GET /api/produtos/{id}/`
+- `POST /api/produtos/`
+- `PUT /api/produtos/{id}/`
+- `PATCH /api/produtos/{id}/`
+- `DELETE /api/produtos/{id}/`
 
----
+Acoes customizadas:
 
-### Produtos
+- `GET /api/produtos/em_estoque/`
+- `GET /api/produtos/sem_estoque/`
+- `POST /api/produtos/{id}/atualizar_quantidade/`
 
-#### 1. Listar todos os produtos
-```
-GET /api/produtos/
-```
+Campos principais:
 
-#### 2. Obter um produto específico
-```
-GET /api/produtos/{id}/
-```
+- `id` (somente leitura)
+- `nome`
+- `preco`
+- `descricao`
+- `quantidade`
+- `preco_compra`
+- `preco_venda`
+- `data_validade`
+- `criado_em` (somente leitura)
+- `atualizado_em` (somente leitura)
 
-#### 3. Criar um novo produto
-```
-POST /api/produtos/
-Content-Type: application/json
+Exemplo de criacao:
 
+```json
 {
   "nome": "Notebook",
-  "preco": 3500.00,
+  "preco": 3500.0,
   "descricao": "Notebook Dell",
   "quantidade": 10,
-  "preco_compra": 2800.00,
-  "preco_venda": 3500.00,
+  "preco_compra": 2800.0,
+  "preco_venda": 3500.0,
   "data_validade": "2027-02-24"
 }
 ```
 
-#### 4. Atualizar um produto
-```
-PUT /api/produtos/{id}/
-PATCH /api/produtos/{id}/
-```
+Exemplo de payload da acao `atualizar_quantidade`:
 
-#### 5. Deletar um produto
-```
-DELETE /api/produtos/{id}/
-```
-
-#### 6. Listar produtos em estoque
-```
-GET /api/produtos/em_estoque/
-```
-
-#### 7. Listar produtos sem estoque
-```
-GET /api/produtos/sem_estoque/
-```
-
-#### 8. Atualizar quantidade de um produto
-```
-POST /api/produtos/{id}/atualizar_quantidade/
-Content-Type: application/json
-
+```json
 {
-  "quantidade": 20
+  "quantidade": 25
 }
 ```
 
----
+### 4.3 Fornecedores
 
-## Respostas de Status HTTP
+CRUD:
 
-- **200 OK**: Requisição bem-sucedida
-- **201 Created**: Recurso criado com sucesso
-- **204 No Content**: Recurso deletado com sucesso
-- **400 Bad Request**: Erro na requisição (dados inválidos)
-- **404 Not Found**: Recurso não encontrado
-- **405 Method Not Allowed**: Método HTTP não permitido
+- `GET /api/fornecedores/`
+- `GET /api/fornecedores/{id}/`
+- `POST /api/fornecedores/`
+- `PUT /api/fornecedores/{id}/`
+- `PATCH /api/fornecedores/{id}/`
+- `DELETE /api/fornecedores/{id}/`
 
----
+Acao customizada:
 
-## Autenticação
+- `GET /api/fornecedores/por_cnpj/?cnpj=...`
 
-Atualmente, a API não requer autenticação. Em produção, recomenda-se implementar:
-- Token Authentication
-- JWT (JSON Web Tokens)
-- OAuth2
+Campos principais:
 
----
+- `id` (somente leitura)
+- `nome_fantasia`
+- `razao_social`
+- `cnpj`
+- `tipo_fornecimento`
+- `categorias_fornecidas`
+- `itens_fornecidos`
+- `email`
+- `telefone`
+- `endereco`
+- `cidade`
+- `estado`
+- `contato`
+- `observacoes`
+- `criado_em` (somente leitura)
+- `atualizado_em` (somente leitura)
 
-## Paginação
+Exemplo de criacao:
 
-A API retorna resultados paginados com 10 itens por página. Use os parâmetros:
-
+```json
+{
+  "nome_fantasia": "Mercado Central",
+  "razao_social": "Mercado Central LTDA",
+  "cnpj": "12.345.678/0001-90",
+  "tipo_fornecimento": "PRODUTOS",
+  "itens_fornecidos": "arroz, feijao",
+  "email": "contato@mercadocentral.com"
+}
 ```
-GET /api/clientes/?page=2
-GET /api/produtos/?page=1
+
+### 4.4 Compras
+
+CRUD:
+
+- `GET /api/compras/`
+- `GET /api/compras/{id}/`
+- `POST /api/compras/`
+- `PUT /api/compras/{id}/`
+- `PATCH /api/compras/{id}/`
+- `DELETE /api/compras/{id}/`
+
+Campos principais:
+
+- `id` (somente leitura)
+- `produto`
+- `produto_nome` (somente leitura)
+- `fornecedor`
+- `fornecedor_nome` (somente leitura)
+- `preco_compra`
+- `preco_venda`
+- `data_compra`
+- `quantidade`
+- `confirmada`
+- `confirmado_em` (somente leitura)
+- `criado_em` (somente leitura)
+
+Exemplo de criacao:
+
+```json
+{
+  "produto": 1,
+  "fornecedor": 1,
+  "preco_compra": 8.5,
+  "preco_venda": 12.0,
+  "data_compra": "2026-03-22",
+  "quantidade": 20,
+  "confirmada": false
+}
 ```
 
----
+Observacoes de regra:
 
-## Exemplos com cURL
+- Compra confirmada entra no estoque.
+- Compra pendente nao altera estoque.
 
-### Listar clientes
+### 4.5 Vendas
+
+CRUD:
+
+- `GET /api/vendas/`
+- `GET /api/vendas/{id}/`
+- `POST /api/vendas/`
+- `PUT /api/vendas/{id}/`
+- `PATCH /api/vendas/{id}/`
+- `DELETE /api/vendas/{id}/`
+
+Campos principais:
+
+- `id` (somente leitura)
+- `cliente`
+- `cliente_nome` (somente leitura)
+- `produto`
+- `produto_nome` (somente leitura)
+- `preco_unitario`
+- `data_venda`
+- `quantidade`
+- `confirmada`
+- `confirmado_em` (somente leitura)
+- `criado_em` (somente leitura)
+
+Exemplo de criacao:
+
+```json
+{
+  "cliente": 1,
+  "produto": 1,
+  "preco_unitario": 12.0,
+  "data_venda": "2026-03-22",
+  "quantidade": 2,
+  "confirmada": false
+}
+```
+
+Observacoes de regra:
+
+- Venda confirmada baixa estoque.
+- Venda pendente nao altera estoque.
+- Venda acima do estoque disponivel e rejeitada.
+
+## 5. Exemplos Praticos com cURL
+
 ```bash
-curl http://127.0.0.1:8000/api/clientes/
-```
+# Listar clientes
+curl -s http://127.0.0.1:8000/api/clientes/
 
-### Criar cliente
-```bash
-curl -X POST http://127.0.0.1:8000/api/clientes/ \
-  -H "Content-Type: application/json" \
-  -d '{"nome": "Maria", "email": "maria@example.com", "telefone": "11988888888"}'
-```
+# Buscar cliente por email
+curl -s "http://127.0.0.1:8000/api/clientes/por_email/?email=joao@example.com"
 
-### Listar produtos em estoque
-```bash
-curl http://127.0.0.1:8000/api/produtos/em_estoque/
-```
+# Listar produtos em estoque
+curl -s http://127.0.0.1:8000/api/produtos/em_estoque/
 
-### Atualizar quantidade de um produto
-```bash
-curl -X POST http://127.0.0.1:8000/api/produtos/1/atualizar_quantidade/ \
+# Atualizar quantidade de produto
+curl -s -X POST http://127.0.0.1:8000/api/produtos/1/atualizar_quantidade/ \
   -H "Content-Type: application/json" \
   -d '{"quantidade": 25}'
+
+# Criar compra
+curl -s -X POST http://127.0.0.1:8000/api/compras/ \
+  -H "Content-Type: application/json" \
+  -d '{"produto":1,"fornecedor":1,"preco_compra":10.0,"preco_venda":15.0,"data_compra":"2026-03-22","quantidade":5,"confirmada":false}'
+
+# Criar venda
+curl -s -X POST http://127.0.0.1:8000/api/vendas/ \
+  -H "Content-Type: application/json" \
+  -d '{"cliente":1,"produto":1,"preco_unitario":15.0,"data_venda":"2026-03-22","quantidade":1,"confirmada":false}'
 ```
+
+## 6. Limitacoes Atuais
+
+- API ainda sem autenticacao por token/JWT.
+- Nao ha suite formal de testes automatizados versionada (unit/integration), apenas scripts shell.
+
+## 7. Arquivos Relacionados
+
+- `IMPLEMENTACAO_API.md` (resumo de implementacao)
+- `teste_api.sh` (teste rapido/smoke)
+- `teste_api_completo.sh` (fluxo ponta a ponta)

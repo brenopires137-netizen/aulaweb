@@ -1,4 +1,5 @@
 ﻿from django.urls import reverse_lazy
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from rest_framework import viewsets
 from rest_framework.decorators import action
@@ -9,13 +10,13 @@ from .serializers import FornecedorSerializer
 from produtos.models import Produto
 
 
-class FornecedorListView(ListView):
+class FornecedorListView(LoginRequiredMixin, ListView):
     model = Fornecedor
     template_name = 'fornecedores/lista.html'
     context_object_name = 'fornecedores'
 
 
-class FornecedorCreateView(CreateView):
+class FornecedorCreateView(LoginRequiredMixin, CreateView):
     model = Fornecedor
     form_class = FornecedorForm
     template_name = 'fornecedores/form.html'
@@ -47,7 +48,7 @@ class FornecedorCreateView(CreateView):
         return context
 
 
-class FornecedorUpdateView(UpdateView):
+class FornecedorUpdateView(LoginRequiredMixin, UpdateView):
     model = Fornecedor
     form_class = FornecedorForm
     template_name = 'fornecedores/form.html'
@@ -59,7 +60,7 @@ class FornecedorUpdateView(UpdateView):
         return context
 
 
-class FornecedorDeleteView(DeleteView):
+class FornecedorDeleteView(LoginRequiredMixin, DeleteView):
     model = Fornecedor
     template_name = 'fornecedores/excluir.html'
     success_url = reverse_lazy('fornecedores_lista')

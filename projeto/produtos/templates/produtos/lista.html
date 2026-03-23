@@ -8,6 +8,8 @@
 <div class="panel" style="margin-bottom: 14px;">
     <strong>Total de itens comprados:</strong> {{ total_itens_comprados }}
     <br>
+    <strong>Total de itens adicionados:</strong> {{ total_itens_adicionados }}
+    <br>
     <strong>Total geral em estoque:</strong> {{ total_estoque_geral }}
 </div>
 
@@ -21,20 +23,29 @@
             <thead>
                 <tr>
                     <th>Nome</th>
-                    <th>Preco</th>
+                    <th>Descrição</th>
+                    <th>Preco de Venda</th>
                     <th>Quantidade</th>
+                    <th>Data da Compra</th>
                     <th>Data de Validade</th>
-                    <th>Acoes</th>
+                    <th>Ações</th>
                 </tr>
             </thead>
             <tbody>
                 {% for produto in produtos %}
                     <tr>
                         <td>{{ produto.nome }}</td>
-                        <td>R$ {{ produto.preco }}</td>
+                        <td>{{ produto.descricao|default:'-' }}</td>
+                        <td>R$ {{ produto.preco_venda|default:produto.preco }}</td>
                         <td>{{ produto.quantidade }}</td>
+                        <td>{{ produto.data_compra|date:"d/m/Y"|default:'-' }}</td>
                         <td>{{ produto.data_validade|date:"d/m/Y"|default:'-' }}</td>
                         <td>
+                            {% if produto.origem_aba_compras %}
+                                <span style="display:inline-block;padding:4px 8px;border-radius:12px;background:#e9eef2;color:#2c3e50;font-size:0.8rem;margin-right:8px;">aba compras</span>
+                            {% else %}
+                                <span style="display:inline-block;padding:4px 8px;border-radius:12px;background:#f0f0f0;color:#4a4a4a;font-size:0.8rem;margin-right:8px;">manual</span>
+                            {% endif %}
                             <a href="{% url 'produtos_editar' produto.pk %}" class="btn btn-warning">Editar</a>
                             <a href="{% url 'produtos_excluir' produto.pk %}" class="btn btn-danger">Excluir</a>
                         </td>
