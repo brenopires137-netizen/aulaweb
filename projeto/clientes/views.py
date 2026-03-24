@@ -4,6 +4,7 @@ from django.views.generic import ListView, CreateView, UpdateView, DeleteView, T
 from django.urls import reverse_lazy
 from django.db.models import Sum
 from rest_framework import viewsets
+from rest_framework.permissions import AllowAny
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from .models import Cliente
@@ -68,6 +69,7 @@ class HomeView(LoginRequiredMixin, TemplateView):
 class ClienteViewSet(viewsets.ModelViewSet):
     queryset = Cliente.objects.all()
     serializer_class = ClienteSerializer
+    permission_classes = [AllowAny]
     
     @action(detail=False, methods=['get'])
     def por_email(self, request):

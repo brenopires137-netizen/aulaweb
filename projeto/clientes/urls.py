@@ -10,7 +10,7 @@ from .views import (
 )
 
 urlpatterns = [
-    path("", HomeView.as_view(), name="home"),
+    path("home/", HomeView.as_view(), name="home"),
     path("clientes/", ClienteListView.as_view(), name="lista"),
     path("clientes/novo/", ClienteCreateView.as_view(), name="criar"),
     path("clientes/editar/<int:pk>/", ClienteUpdateView.as_view(), name="editar"),

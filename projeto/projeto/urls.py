@@ -16,6 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
+from django.shortcuts import redirect
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from clientes.views import ClienteViewSet
@@ -32,8 +33,22 @@ router.register(r'fornecedores', FornecedorViewSet)
 router.register(r'compras', CompraViewSet)
 router.register(r'vendas', VendaViewSet)
 
+
+def root_redirect_view(request):
+    if request.user.is_authenticated:
+        return redirect('home')
+    return redirect('login')
+
 urlpatterns = [
-    path('login/', auth_views.LoginView.as_view(template_name='registration/login.html'), name='login'),
+    path('', root_redirect_view, name='root'),
+    path(
+        'login/',
+        auth_views.LoginView.as_view(
+            template_name='registration/login.html',
+            redirect_authenticated_user=True,
+        ),
+        name='login',
+    ),
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
     path('', include('clientes.urls')),
     path('produtos/', include('produtos.urls')),
